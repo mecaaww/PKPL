@@ -110,7 +110,11 @@
                             </p>
 
                             <p>
-                                {!! nl2br(e(str_replace('\\n', "\n", $d->nilai))) !!}
+                                @if($d->label === 'Product Description')
+                                    {{ $d->nilai }}
+                                @else
+                                    {!! nl2br(e(str_replace('\\n', "\n", $d->nilai))) !!}
+                                @endif
                             </p>
                         </div>
                     @endforeach

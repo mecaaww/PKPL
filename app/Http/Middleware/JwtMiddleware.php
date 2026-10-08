@@ -23,11 +23,11 @@ class JwtMiddleware
 
         } catch (Exception $e) {
             if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException){
-                return redirect()->route('auth.login')->with('error', 'Token tidak valid');
+                return redirect()->route('login')->with('error', 'Token tidak valid');
             } else if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException){
-                return redirect()->route('auth.login')->with('error', 'Sesi berakhir, silakan login lagi');
+                return redirect()->route('login')->with('error', 'Sesi berakhir, silakan login lagi');
             } else {
-                return redirect()->route('auth.login')->with('error', 'Silakan login terlebih dahulu');
+                return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
             }
         }
         return $next($request);

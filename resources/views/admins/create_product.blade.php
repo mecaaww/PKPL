@@ -42,24 +42,55 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="space-y-2">
                     <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Harga Satuan (Rp) *</label>
-                    <input type="number" name="harga" required
-                           class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 outline-none text-sm font-semibold text-gray-700"
-                           placeholder="0" min="0">
+                    <input type="number" name="harga"
+                           value="{{ old('harga') }}"
+                           required min="1" max="500000" step="1"
+                           class="w-full bg-gray-50 border {{ $errors->has('harga') ? 'border-red-500 focus:ring-red-300' : 'border-gray-200 focus:border-[var(--primary)] focus:ring-[var(--primary)]/20' }} rounded-xl px-4 py-3 focus:ring-2 outline-none text-sm font-semibold text-gray-700"
+                           placeholder="Contoh: 25000">
+                    @error('harga')
+                        <p class="text-xs text-red-600 font-medium flex items-center gap-1">
+                            <iconify-icon icon="mdi:alert-circle-outline" class="text-sm"></iconify-icon>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                    <p class="text-[11px] text-gray-400">Rentang: Rp1 – Rp500.000</p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Stok Awal *</label>
-                    <input type="number" name="stok" required
-                           class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 outline-none text-sm font-semibold text-gray-700"
-                           placeholder="0" min="0">
+                    <input type="number" name="stok"
+                           value="{{ old('stok') }}"
+                           required min="0" max="5000" step="1"
+                           class="w-full bg-gray-50 border {{ $errors->has('stok') ? 'border-red-500 focus:ring-red-300' : 'border-gray-200 focus:border-[var(--primary)] focus:ring-[var(--primary)]/20' }} rounded-xl px-4 py-3 focus:ring-2 outline-none text-sm font-semibold text-gray-700"
+                           placeholder="0">
+                    @error('stok')
+                        <p class="text-xs text-red-600 font-medium flex items-center gap-1">
+                            <iconify-icon icon="mdi:alert-circle-outline" class="text-sm"></iconify-icon>
+                            {{ $message }}
+                        </p>
+                    @enderror
+                    <p class="text-[11px] text-gray-400">Rentang: 0 – 5.000 unit (0 = stok habis)</p>
                 </div>
             </div>
 
             <div class="space-y-2">
-                <label class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Diskon (%)</label>
-                <input type="number" name="diskon_persen"
-                       class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 outline-none text-sm font-semibold text-gray-700"
-                       placeholder="0" value="0" min="0" max="100">
-                <p class="text-xs text-gray-500">Opsional: Kosongkan atau isi 0 jika tidak ada diskon</p>
+                <label for="deskripsi" class="text-xs font-semibold text-gray-600 uppercase tracking-wide">Deskripsi Produk *</label>
+                <div class="relative">
+                    <textarea name="deskripsi" id="deskripsi" rows="4" required minlength="20" maxlength="1000"
+                              class="w-full bg-gray-50 border @error('deskripsi') border-red-500 @else border-gray-200 @enderror rounded-xl px-4 py-3 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 outline-none text-sm font-semibold text-gray-700 resize-none"
+                              placeholder="Masukkan deskripsi produk (minimal 20 karakter)...">{{ old('deskripsi') }}</textarea>
+                </div>
+                <div class="flex justify-between items-start mt-1">
+                    <div>
+                        @error('deskripsi')
+                            <p class="text-xs text-red-600 font-medium flex items-center gap-1 mb-1">
+                                <iconify-icon icon="mdi:alert-circle-outline" class="text-sm"></iconify-icon>
+                                {{ $message }}
+                            </p>
+                        @enderror
+                        <p class="text-[11px] text-gray-400">Minimal 20 dan maksimal 1.000 karakter</p>
+                    </div>
+                    <span id="char-count" class="text-[11px] font-semibold text-gray-500">0/1000</span>
+                </div>
             </div>
 
             <div class="flex gap-3 pt-4 border-t border-gray-100">
@@ -146,5 +177,15 @@
         placeholder.classList.remove('hidden');
         removeBtn.classList.add('hidden');
     });
+
+    const deskripsi = document.getElementById('deskripsi');
+    const charCount = document.getElementById('char-count');
+    if (deskripsi && charCount) {
+        const updateCount = () => {
+            charCount.innerText = deskripsi.value.length + '/1000';
+        };
+        deskripsi.addEventListener('input', updateCount);
+        updateCount();
+    }
 </script>
 @endsection

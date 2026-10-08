@@ -32,16 +32,17 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 Route::get('/obat/{id}', [ObatController::class, 'show'])->name('obat.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
-Route::middleware('jwt.auth')->group(function () {
+Route::middleware('custom.jwt')->group(function () {
     Route::get('/keranjang', [KeranjangController::class, 'index'])->name('products.keranjang_product');
     Route::get('/pembayaran/{id}', [PesananController::class, 'struk'])->name('pesanan.struk');
     Route::get('/pesanan', [PesananController::class, 'index']);
     Route::get('/pesanan/{id}', [PesananController::class, 'show']);
 });
 
-Route::prefix('admin')->middleware(['jwt.auth'])->group(function () {
+Route::prefix('admin')->middleware(['custom.jwt'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('obat', AdminObatController::class);
+    Route::patch('/obat/{id}/diskon', [AdminObatController::class, 'updateDiskon'])->name('obat.updateDiskon');
     Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('admin.pesanan.index');
     Route::get('pesanan/{id}', [AdminPesananController::class, 'show'])->name('admin.pesanan.show');
     Route::put('/pesanan/{id}/status', [AdminPesananController::class, 'updateStatus'])->name('admin.pesanan.updateStatus');

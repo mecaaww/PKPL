@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware('jwt.auth')->group(function () {
+Route::middleware('custom.jwt')->group(function () {
     Route::post('/keranjang/tambah', [KeranjangController::class, 'tambah']);
     Route::post('/keranjang/update', [KeranjangController::class, 'update']);
     Route::delete('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus']);

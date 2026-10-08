@@ -15,6 +15,7 @@
         </a>
     </div>
 
+
     <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">
         <form id="mainFilterForm" action="" method="GET" class="space-y-4">
             <div class="flex flex-col lg:flex-row gap-3">
@@ -89,7 +90,7 @@
                         <th class="p-4">Produk</th>
                         <th class="p-4 text-center">Stok</th>
                         <th class="p-4">Harga</th>
-                        <th class="p-4">Diskon</th>
+                        <th class="p-4">Diskon & Status</th>
                         <th class="p-4 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -115,7 +116,32 @@
                         </td>
                         <td class="text-sm p-4 font-medium text-gray-800">Rp{{ number_format($o->harga, 0, ',', '.') }}</td>
                         <td class="p-4">
-                            <span class="text-[var(--primary)] font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100 text-xs">{{ $o->diskon_persen }}%</span>
+                            <div class="diskon-wrapper" data-id="{{ $o->id }}" data-url="{{ route('obat.updateDiskon', $o->id) }}">
+                                <div class="diskon-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border {{ $o->status_diskon['class'] }} cursor-pointer hover:opacity-80 transition" title="Klik untuk ubah diskon">
+                                    <span class="diskon-dot w-1.5 h-1.5 rounded-full {{ $o->status_diskon['dot'] }}"></span>
+                                    <span class="diskon-label">{{ $o->status_diskon['badge_full'] }}</span>
+                                    <iconify-icon icon="mdi:chevron-down" class="text-sm ml-0.5"></iconify-icon>
+                                </div>
+                                <select class="diskon-select hidden mt-1 bg-white border border-gray-300 rounded-lg px-2 py-1.5 text-xs font-semibold text-gray-700 cursor-pointer shadow-lg z-50" data-current="{{ $o->diskon_persen }}">
+                                    <optgroup label="Tanpa Diskon">
+                                        <option value="0" {{ $o->diskon_persen == 0 ? 'selected' : '' }}>0% — Tanpa Diskon</option>
+                                    </optgroup>
+                                    <optgroup label="Diskon Rendah">
+                                        <option value="5" {{ $o->diskon_persen == 5 ? 'selected' : '' }}>5% — Rendah</option>
+                                        <option value="10" {{ $o->diskon_persen == 10 ? 'selected' : '' }}>10% — Rendah</option>
+                                    </optgroup>
+                                    <optgroup label="Diskon Sedang">
+                                        <option value="15" {{ $o->diskon_persen == 15 ? 'selected' : '' }}>15% — Sedang</option>
+                                        <option value="20" {{ $o->diskon_persen == 20 ? 'selected' : '' }}>20% — Sedang</option>
+                                    </optgroup>
+                                    <optgroup label="Diskon Tinggi">
+                                        <option value="25" {{ $o->diskon_persen == 25 ? 'selected' : '' }}>25% — Tinggi</option>
+                                        <option value="30" {{ $o->diskon_persen == 30 ? 'selected' : '' }}>30% — Tinggi</option>
+                                        <option value="40" {{ $o->diskon_persen == 40 ? 'selected' : '' }}>40% — Tinggi</option>
+                                        <option value="50" {{ $o->diskon_persen == 50 ? 'selected' : '' }}>50% — Tinggi</option>
+                                    </optgroup>
+                                </select>
+                            </div>
                         </td>
                         <td class="p-4">
                             <div class="flex justify-center gap-2">
@@ -148,7 +174,27 @@
                     <div class="flex-1 min-w-0">
                         <p class="text-xs text-gray-500">#{{ $o->id }} • {{ $o->kategori }}</p>
                         <p class="font-semibold text-gray-800 text-sm">{{ $o->nama }}</p>
-                        <p class="text-sm font-bold text-gray-800 mt-1">Rp{{ number_format($o->harga, 0, ',', '.') }}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <p class="text-sm font-bold text-gray-800">Rp{{ number_format($o->harga, 0, ',', '.') }}</p>
+                            <div class="diskon-wrapper" data-id="{{ $o->id }}" data-url="{{ route('obat.updateDiskon', $o->id) }}">
+                                <div class="diskon-badge inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border {{ $o->status_diskon['class'] }} cursor-pointer hover:opacity-80" title="Klik untuk ubah diskon">
+                                    <span class="diskon-dot w-1.5 h-1.5 rounded-full {{ $o->status_diskon['dot'] }}"></span>
+                                    <span class="diskon-label">{{ $o->status_diskon['badge_full'] }}</span>
+                                    <iconify-icon icon="mdi:pencil" class="text-[9px] ml-0.5"></iconify-icon>
+                                </div>
+                                <select class="diskon-select hidden mt-1 bg-white border border-gray-300 rounded-lg px-2 py-1 text-xs font-semibold text-gray-700 cursor-pointer shadow-lg" data-current="{{ $o->diskon_persen }}">
+                                    <option value="0" {{ $o->diskon_persen == 0 ? 'selected' : '' }}>0% — Tanpa Diskon</option>
+                                    <option value="5" {{ $o->diskon_persen == 5 ? 'selected' : '' }}>5% — Rendah</option>
+                                    <option value="10" {{ $o->diskon_persen == 10 ? 'selected' : '' }}>10% — Rendah</option>
+                                    <option value="15" {{ $o->diskon_persen == 15 ? 'selected' : '' }}>15% — Sedang</option>
+                                    <option value="20" {{ $o->diskon_persen == 20 ? 'selected' : '' }}>20% — Sedang</option>
+                                    <option value="25" {{ $o->diskon_persen == 25 ? 'selected' : '' }}>25% — Tinggi</option>
+                                    <option value="30" {{ $o->diskon_persen == 30 ? 'selected' : '' }}>30% — Tinggi</option>
+                                    <option value="40" {{ $o->diskon_persen == 40 ? 'selected' : '' }}>40% — Tinggi</option>
+                                    <option value="50" {{ $o->diskon_persen == 50 ? 'selected' : '' }}>50% — Tinggi</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="flex items-center justify-between bg-gray-50 p-3 rounded-xl">
@@ -248,6 +294,7 @@
 </div>
 
 <script>
+    // ===== Filter Dropdown (Kategori & Sort) =====
     document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
         const trigger = dropdown.querySelector('.dropdown-trigger');
         const menu = dropdown.querySelector('.dropdown-menu');
@@ -273,6 +320,106 @@
     document.addEventListener('click', () => {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.add('hidden'));
         document.querySelectorAll('.dropdown-trigger iconify-icon[icon="mdi:chevron-down"]').forEach(a => a.classList.remove('rotate-180'));
+    });
+
+    // ===== Inline Diskon Dropdown (State-Based) =====
+    const DISKON_STATES = {
+        0:  { label: '0% • Tanpa Diskon',  badgeClass: 'bg-gray-100 text-gray-700 border-gray-300',       dot: 'bg-gray-400' },
+        5:  { label: '5% • Diskon Rendah', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
+        10: { label: '10% • Diskon Rendah',badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-500' },
+        15: { label: '15% • Diskon Sedang',badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-500' },
+        20: { label: '20% • Diskon Sedang',badgeClass: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-500' },
+        25: { label: '25% • Diskon Tinggi',badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',          dot: 'bg-rose-500' },
+        30: { label: '30% • Diskon Tinggi',badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',          dot: 'bg-rose-500' },
+        40: { label: '40% • Diskon Tinggi',badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',          dot: 'bg-rose-500' },
+        50: { label: '50% • Diskon Tinggi',badgeClass: 'bg-rose-50 text-rose-700 border-rose-200',          dot: 'bg-rose-500' },
+    };
+
+    const ALL_BADGE_CLASSES = 'bg-gray-100 text-gray-700 border-gray-300 bg-emerald-50 text-emerald-700 border-emerald-200 bg-amber-50 text-amber-700 border-amber-200 bg-rose-50 text-rose-700 border-rose-200';
+    const ALL_DOT_CLASSES = 'bg-gray-400 bg-emerald-500 bg-amber-500 bg-rose-500';
+
+    function applyDiskonState(wrapper, diskon) {
+        const state = DISKON_STATES[diskon] || DISKON_STATES[0];
+        const badge = wrapper.querySelector('.diskon-badge');
+        const dot   = wrapper.querySelector('.diskon-dot');
+        const label = wrapper.querySelector('.diskon-label');
+
+        // Reset classes
+        ALL_BADGE_CLASSES.split(' ').forEach(c => badge.classList.remove(c));
+        ALL_DOT_CLASSES.split(' ').forEach(c => dot.classList.remove(c));
+
+        // Apply new state
+        state.badgeClass.split(' ').forEach(c => badge.classList.add(c));
+        dot.classList.add(state.dot);
+        label.textContent = state.label;
+    }
+
+    document.querySelectorAll('.diskon-wrapper').forEach(wrapper => {
+        const badge  = wrapper.querySelector('.diskon-badge');
+        const select = wrapper.querySelector('.diskon-select');
+        const url    = wrapper.dataset.url;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+        // Klik badge → tampilkan select
+        badge.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Tutup semua select lain
+            document.querySelectorAll('.diskon-select').forEach(s => {
+                if (s !== select) {
+                    s.classList.add('hidden');
+                    s.previousElementSibling.classList.remove('hidden');
+                }
+            });
+            badge.classList.add('hidden');
+            select.classList.remove('hidden');
+            select.focus();
+        });
+
+        // Saat pilih nilai baru → kirim AJAX
+        select.addEventListener('change', async function () {
+            const newVal = parseInt(this.value);
+            select.disabled = true;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ diskon_persen: newVal }),
+                });
+
+                if (res.ok) {
+                    applyDiskonState(wrapper, newVal);
+                    // Flash efek sukses
+                    badge.classList.add('ring-2', 'ring-green-400');
+                    setTimeout(() => badge.classList.remove('ring-2', 'ring-green-400'), 1500);
+                } else {
+                    alert('Gagal menyimpan diskon.');
+                    // Kembalikan ke nilai sebelumnya
+                    this.value = this.dataset.current;
+                }
+            } catch (err) {
+                alert('Terjadi kesalahan jaringan.');
+                this.value = this.dataset.current;
+            } finally {
+                select.disabled = false;
+                select.dataset.current = newVal;
+                // Sembunyikan select, tampilkan badge
+                select.classList.add('hidden');
+                badge.classList.remove('hidden');
+            }
+        });
+
+        // Klik di luar → tutup select
+        select.addEventListener('blur', function () {
+            setTimeout(() => {
+                select.classList.add('hidden');
+                badge.classList.remove('hidden');
+            }, 200);
+        });
     });
 </script>
 @endsection
