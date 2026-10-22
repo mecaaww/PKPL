@@ -1,0 +1,80 @@
+{
+  "input": "D:\\KULIAH SEMESTER 7\\PENJAMINAN KUALITAS PERANGKAT LUNAK\\MODUL 2\\PRELAB\\Test Design Specification & TTM Template.docx",
+  "fonts_by_char_count": {
+    "Cambria": 129
+  },
+  "direct_run_formatting_runs": 92,
+  "direct_paragraph_formatting_paragraphs": 99,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 9,
+      "text": "FS-001 - Registrasi Mata Kuliah",
+      "style": "Normal"
+    },
+    {
+      "para_index": 13,
+      "text": "FS-002 - Daftar Mata Kuliah Terdaftar",
+      "style": "Normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "TEST DESIGN SPECIFICATION (TDS)",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 2,
+        "text": "1. Requirements",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 8,
+        "text": "2. Feature Sets",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 17,
+        "text": "3. Test Conditions",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 18,
+        "text": "4. Coverage Items",
+        "style": "Heading 2"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 1,
+        "run_text": "TEST DESIGN SPECIFICATION (TDS)",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 2,
+        "run_text": "1. Requirements",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 8,
+        "run_text": "2. Feature Sets",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 9,
+        "run_text": "FS-001 - Registrasi Mata Kuliah",
+        "style": "Normal"
+      },
+      {
+        "para_index": 13,
+        "run_text": "FS-002 - Daftar Mata Kuliah Terdaftar",
+        "style": "Normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

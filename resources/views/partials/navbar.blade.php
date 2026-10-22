@@ -39,7 +39,7 @@
           <a href="{{ route('login') }}" class="px-4 py-2 bg-[var(--primary)] text-white rounded-md shadow hover:bg-[var(--primary-dark)] transition text-sm whitespace-nowrap">
             Login
           </a>
-      @elseif($user->role === 'admin')
+      @elseif($user->isAdmin())
           <div class="flex items-center gap-3 md:gap-4">
               <a href="{{ url('/admin') }}" class="flex items-center gap-1 text-sm font-bold text-blue-600 hover:text-blue-800 transition">
                   <iconify-icon icon="mdi:view-dashboard" class="text-xl md:text-2xl"></iconify-icon>

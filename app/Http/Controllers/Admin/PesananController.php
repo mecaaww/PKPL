@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PesananController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Pesanan::with('user')->latest();
+        $query = Pesanan::with('user')
+            ->orderByRaw("FIELD(status_pesanan, 'menunggu pembayaran', 'dikemas', 'dikirim', 'selesai', 'dibatalkan')")
+            ->orderBy('created_at', 'desc');
 
         if ($request->has('status') && $request->status != '') {
             $query->where('status_pesanan', $request->status);

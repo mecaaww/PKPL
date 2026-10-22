@@ -1,15 +1,17 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ObatController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\KeranjangController;
-use App\Http\Controllers\PesananController;
-use App\Http\Controllers\SearchController;
-// Import Controller Admin di sini
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ObatController as AdminObatController;
 use App\Http\Controllers\Admin\PesananController as AdminPesananController;
+use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+// Import Controller Admin di sini
+use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\ObatController;
+use App\Http\Controllers\PesananController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -39,11 +41,22 @@ Route::middleware('custom.jwt')->group(function () {
     Route::get('/pesanan/{id}', [PesananController::class, 'show']);
 });
 
-Route::prefix('admin')->middleware(['custom.jwt'])->group(function () {
+Route::prefix('admin')->middleware(['custom.jwt', 'role:admin,superadmin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('obat', AdminObatController::class);
     Route::patch('/obat/{id}/diskon', [AdminObatController::class, 'updateDiskon'])->name('obat.updateDiskon');
     Route::get('/pesanan', [AdminPesananController::class, 'index'])->name('admin.pesanan.index');
     Route::get('pesanan/{id}', [AdminPesananController::class, 'show'])->name('admin.pesanan.show');
     Route::put('/pesanan/{id}/status', [AdminPesananController::class, 'updateStatus'])->name('admin.pesanan.updateStatus');
+
+    Route::resource('users', AdminUserController::class)
+        ->except('show')
+        ->names('admin.users')
+        ->middleware('role:superadmin');
+
+    Route::middleware('role:superadmin')->group(function () {
+        Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+        Route::put('/settings/target', [AdminSettingsController::class, 'updateTarget'])->name('admin.settings.target.update');
+        Route::put('/settings/announcement', [AdminSettingsController::class, 'updateAnnouncement'])->name('admin.settings.announcement.update');
+    });
 });

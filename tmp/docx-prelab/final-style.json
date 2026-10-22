@@ -1,0 +1,90 @@
+{
+  "input": "D:\\KULIAH SEMESTER 7\\PENJAMINAN KUALITAS PERANGKAT LUNAK\\MODUL 2\\PRELAB\\Test Design Specification & TTM Template.docx",
+  "fonts_by_char_count": {
+    "Cambria": 2287
+  },
+  "direct_run_formatting_runs": 108,
+  "direct_paragraph_formatting_paragraphs": 101,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 1,
+      "text": "Nama: Rima Marsya Putri Sabrina",
+      "style": "normal"
+    },
+    {
+      "para_index": 2,
+      "text": "NIM: 202310370311425",
+      "style": "normal"
+    },
+    {
+      "para_index": 11,
+      "text": "FS-001 - Registrasi Mata Kuliah",
+      "style": "normal"
+    },
+    {
+      "para_index": 15,
+      "text": "FS-002 - Daftar Mata Kuliah Terdaftar",
+      "style": "normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "Nama: Rima Marsya Putri Sabrina",
+        "style": "normal"
+      },
+      {
+        "para_index": 2,
+        "text": "NIM: 202310370311425",
+        "style": "normal"
+      },
+      {
+        "para_index": 3,
+        "text": "TEST DESIGN SPECIFICATION (TDS)",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 4,
+        "text": "1. Requirements",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 10,
+        "text": "2. Feature Sets",
+        "style": "Heading 2"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 1,
+        "run_text": "Nama: ",
+        "style": "normal"
+      },
+      {
+        "para_index": 1,
+        "run_text": "Rima Marsya Putri Sabrina",
+        "style": "normal"
+      },
+      {
+        "para_index": 2,
+        "run_text": "NIM: ",
+        "style": "normal"
+      },
+      {
+        "para_index": 2,
+        "run_text": "202310370311425",
+        "style": "normal"
+      },
+      {
+        "para_index": 3,
+        "run_text": "TEST",
+        "style": "Heading 1"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

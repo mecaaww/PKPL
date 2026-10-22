@@ -14,9 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'custom.jwt' => \App\Http\Middleware\JwtMiddleware::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
-    })
-    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->trimStrings(except: [
+            'konten',
+        ]);
         $middleware->encryptCookies(['token']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

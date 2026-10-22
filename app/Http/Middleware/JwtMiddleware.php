@@ -12,24 +12,34 @@ class JwtMiddleware
     {
         try {
             if ($token = $request->cookie('token')) {
-                $request->headers->set('Authorization', 'Bearer ' . $token);
+                try {
+                    $token = \Illuminate\Support\Facades\Crypt::decrypt($token, false);
+                } catch (Exception) {
+                    // Token is unencrypted, keep as is
+                }
+                if (is_string($token) && str_contains($token, '|')) {
+                    $token = explode('|', $token, 2)[1];
+                }
+                $request->headers->set('Authorization', 'Bearer '.$token);
+                $user = JWTAuth::setToken($token)->authenticate();
+            } else {
+                $user = JWTAuth::parseToken()->authenticate();
             }
 
-            $user = JWTAuth::parseToken()->authenticate();
-
-            if ($user->role === 'admin' && !$request->is('admin*')) {
-                return redirect()->route('admins.dashboard');
+            if ($user->isAdmin() && ! $request->is('admin*') && ! $request->is('logout')) {
+                return redirect()->route('admin.dashboard');
             }
 
         } catch (Exception $e) {
-            if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException){
+            if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException) {
                 return redirect()->route('login')->with('error', 'Token tidak valid');
-            } else if ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException){
+            } elseif ($e instanceof \PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException) {
                 return redirect()->route('login')->with('error', 'Sesi berakhir, silakan login lagi');
             } else {
                 return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu');
             }
         }
+
         return $next($request);
     }
 }

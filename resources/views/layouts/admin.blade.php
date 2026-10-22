@@ -115,7 +115,10 @@
         </button>
     </div>
 
-    <nav class="flex-1 mt-6 px-4 space-y-2 sidebar-scroll overflow-y-auto">
+    <nav class="flex-1 mt-6 px-4 space-y-1.5 sidebar-scroll overflow-y-auto">
+      {{-- Menu Utama --}}
+      <p class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">Menu Utama</p>
+
       <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 p-3.5 rounded-xl transition-all {{ request()->is('admin') ? 'bg-[var(--primary)] text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
         <iconify-icon icon="mdi:view-dashboard" class="text-xl"></iconify-icon>
         <span class="text-sm font-semibold">Dashboard</span>
@@ -130,6 +133,27 @@
         <iconify-icon icon="mdi:cart-check" class="text-xl"></iconify-icon>
         <span class="text-sm font-semibold">Pemesanan</span>
       </a>
+
+      @if(auth()->guard('api')->user()?->isSuperadmin())
+      {{-- Divider --}}
+      <div class="!my-4 border-t border-slate-700/50"></div>
+
+      {{-- Manajemen Akun --}}
+      <p class="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">Manajemen Akun</p>
+
+      <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 p-3.5 rounded-xl transition-all {{ request()->is('admin/users*') ? 'bg-[var(--primary)] text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+        <iconify-icon icon="mdi:account-cog" class="text-xl"></iconify-icon>
+        <span class="text-sm font-semibold">Kelola Akun</span>
+      </a>
+
+      {{-- Sistem --}}
+      <p class="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-widest text-slate-500">Sistem</p>
+
+      <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 p-3.5 rounded-xl transition-all {{ request()->is('admin/settings*') ? 'bg-[var(--primary)] text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+        <iconify-icon icon="mdi:cog-outline" class="text-xl"></iconify-icon>
+        <span class="text-sm font-semibold">Pengaturan</span>
+      </a>
+      @endif
     </nav>
 
     <div class="p-4 border-t border-slate-800">
@@ -153,7 +177,7 @@
 
         <div class="flex items-center gap-3">
             <div class="text-right hidden sm:block">
-                <p class="text-xs text-gray-500">Administrator</p>
+                <p class="text-xs text-gray-500">{{ auth()->guard('api')->user()?->isSuperadmin() ? 'Superadmin' : 'Administrator' }}</p>
                 <p class="text-sm font-bold text-gray-800">{{ auth()->guard('api')->user()->username ?? 'Admin' }}</p>
             </div>
             <div class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center border border-gray-200">

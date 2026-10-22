@@ -1,0 +1,80 @@
+{
+  "input": "C:\\Users\\Marsya\\WebApotek\\tmp\\docx-prelab\\reference.docx",
+  "fonts_by_char_count": {
+    "Cambria": 161
+  },
+  "direct_run_formatting_runs": 10,
+  "direct_paragraph_formatting_paragraphs": 91,
+  "heading_like_paragraphs_not_heading_style": [
+    {
+      "para_index": 6,
+      "text": "FS-001 \u2013 Book Management",
+      "style": "normal"
+    },
+    {
+      "para_index": 10,
+      "text": "FS-002 \u2013 Loan Management",
+      "style": "normal"
+    }
+  ],
+  "examples": {
+    "direct_paragraph_formatting": [
+      {
+        "para_index": 1,
+        "text": "TEST DESIGN SPECIFICATION (TDS)",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 2,
+        "text": "1. Requirements",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 5,
+        "text": "2. Feature Sets",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 14,
+        "text": "3. Test Conditions",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 15,
+        "text": "4. Coverage Items",
+        "style": "Heading 2"
+      }
+    ],
+    "direct_run_formatting": [
+      {
+        "para_index": 1,
+        "run_text": "TEST",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 1,
+        "run_text": " DESIGN SPECIFICATION (TDS)",
+        "style": "Heading 1"
+      },
+      {
+        "para_index": 2,
+        "run_text": "1. Requirements",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 5,
+        "run_text": "2. Feature Sets",
+        "style": "Heading 2"
+      },
+      {
+        "para_index": 6,
+        "run_text": "FS-001 \u2013 Book Management",
+        "style": "normal"
+      }
+    ]
+  },
+  "notes": [
+    "Direct formatting is not always wrong, but it often causes inconsistent output when templates change.",
+    "Heading-like paragraphs not using Heading styles can break TOC and accessibility."
+  ]
+}

@@ -56,31 +56,27 @@ class ObatController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama'         => 'required',
-            'harga'        => 'required|integer|min:1|max:500000',
-            'stok'         => 'required|integer|min:0|max:5000',
-            'diskon_persen'=> 'nullable|integer|min:0|max:100',
-            'gambar'       => 'image|mimes:jpeg,png,jpg|max:2048',
-            'deskripsi'    => 'required|string|min:20|max:1000|regex:/^[^<>]*$/',
+            'nama'          => 'required',
+            'harga'         => 'required|integer|min:1|max:9999999',
+            'stok'          => 'required|integer|min:0|max:5000',
+            'diskon_persen' => 'nullable|integer|min:0|max:100',
+            'gambar'        => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsi'     => 'required|string|min:10|max:1000',
         ], [
-            'harga.required' => 'Harga wajib diisi.',
-            'harga.integer'  => 'Harga harus berupa bilangan bulat.',
-            'harga.min'      => 'Harga minimal Rp1.',
-            'harga.max'      => 'Harga maksimal Rp500.000.',
-            'stok.required'  => 'Stok wajib diisi.',
-            'stok.integer'   => 'Stok harus berupa bilangan bulat.',
-            'stok.min'       => 'Stok minimal 0.',
-            'stok.max'       => 'Stok maksimal 5.000.',
+            'harga.required'     => 'Harga wajib diisi.',
+            'harga.integer'      => 'Harga harus berupa bilangan bulat.',
+            'harga.min'          => 'Harga minimal Rp1.',
+            'stok.required'      => 'Stok wajib diisi.',
+            'stok.min'           => 'Stok minimal 0.',
+            'stok.max'           => 'Stok maksimal 5.000.',
             'deskripsi.required' => 'Deskripsi produk wajib diisi.',
-            'deskripsi.string'   => 'Deskripsi produk harus berupa teks.',
-            'deskripsi.min'      => 'Deskripsi produk minimal 20 karakter.',
-            'deskripsi.max'      => 'Deskripsi produk maksimal 1.000 karakter.',
-            'deskripsi.regex'    => 'Deskripsi produk tidak boleh mengandung tag HTML.',
+            'deskripsi.min'      => 'Deskripsi produk minimal 10 karakter.',
+            'gambar.required'    => 'Foto produk wajib diupload.',
         ]);
 
         DB::beginTransaction();
         try {
-            $data = $request->except(['deskripsi']);
+            $data = $request->only(['nama', 'kategori', 'harga', 'stok']);
             $data['diskon_persen'] = (int) ($request->diskon_persen ?? 0);
 
             if ($request->hasFile('gambar')) {
@@ -88,14 +84,32 @@ class ObatController extends Controller
             }
 
             $obat = Obat::create($data);
-            $obatId = $obat->id ?: DB::getPdo()->lastInsertId();
 
-            DeskripsiObat::create([
-                'obat_id' => $obatId,
-                'label' => 'Product Description',
-                'nilai' => trim($request->deskripsi),
-                'urutan' => 1
-            ]);
+            // Deskripsi fields dengan label & urutan
+            $deskripsiFields = [
+                ['label' => 'Product Description', 'nilai' => $request->deskripsi,      'urutan' => 1],
+                ['label' => 'Indikasi Umum',       'nilai' => $request->indikasi_umum,  'urutan' => 2],
+                ['label' => 'Komposisi',            'nilai' => $request->komposisi,      'urutan' => 3],
+                ['label' => 'Dosis',                'nilai' => $request->dosis,          'urutan' => 4],
+                ['label' => 'Aturan Pakai',         'nilai' => $request->aturan_pakai,   'urutan' => 5],
+                ['label' => 'Kontra Indikasi',      'nilai' => $request->kontra_indikasi,'urutan' => 6],
+                ['label' => 'Perhatian',            'nilai' => $request->perhatian,      'urutan' => 7],
+                ['label' => 'Efek Samping',         'nilai' => $request->efek_samping,   'urutan' => 8],
+                ['label' => 'Kemasan',              'nilai' => $request->kemasan,        'urutan' => 9],
+                ['label' => 'Manufaktur',           'nilai' => $request->manufaktur,     'urutan' => 10],
+                ['label' => 'No. Registrasi',       'nilai' => $request->no_registrasi,  'urutan' => 11],
+            ];
+
+            foreach ($deskripsiFields as $field) {
+                if (!empty(trim($field['nilai'] ?? ''))) {
+                    DeskripsiObat::create([
+                        'obat_id' => $obat->id,
+                        'label'   => $field['label'],
+                        'nilai'   => trim($field['nilai']),
+                        'urutan'  => $field['urutan'],
+                    ]);
+                }
+            }
 
             DB::commit();
             return redirect()->route('obat.index')->with('success', 'Produk berhasil ditambah');
@@ -113,48 +127,67 @@ class ObatController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama'         => 'required',
-            'harga'        => 'required|integer|min:1|max:500000',
-            'stok'         => 'required|integer|min:0|max:5000',
-            'diskon_persen'=> 'nullable|integer|min:0|max:100',
-            'deskripsi'    => 'required|string|min:20|max:1000|regex:/^[^<>]*$/',
+            'nama'          => 'required',
+            'harga'         => 'required|integer|min:1|max:9999999',
+            'stok'          => 'required|integer|min:0|max:5000',
+            'diskon_persen' => 'nullable|integer|min:0|max:100',
+            'gambar'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'deskripsi'     => 'required|string|min:10|max:1000',
         ], [
-            'harga.required' => 'Harga wajib diisi.',
-            'harga.integer'  => 'Harga harus berupa bilangan bulat.',
-            'harga.min'      => 'Harga minimal Rp1.',
-            'harga.max'      => 'Harga maksimal Rp500.000.',
-            'stok.required'  => 'Stok wajib diisi.',
-            'stok.integer'   => 'Stok harus berupa bilangan bulat.',
-            'stok.min'       => 'Stok minimal 0.',
-            'stok.max'       => 'Stok maksimal 5.000.',
+            'harga.required'     => 'Harga wajib diisi.',
+            'harga.min'          => 'Harga minimal Rp1.',
+            'stok.required'      => 'Stok wajib diisi.',
+            'stok.min'           => 'Stok minimal 0.',
+            'stok.max'           => 'Stok maksimal 5.000.',
             'deskripsi.required' => 'Deskripsi produk wajib diisi.',
-            'deskripsi.string'   => 'Deskripsi produk harus berupa teks.',
-            'deskripsi.min'      => 'Deskripsi produk minimal 20 karakter.',
-            'deskripsi.max'      => 'Deskripsi produk maksimal 1.000 karakter.',
-            'deskripsi.regex'    => 'Deskripsi produk tidak boleh mengandung tag HTML.',
+            'deskripsi.min'      => 'Deskripsi produk minimal 10 karakter.',
         ]);
 
         DB::beginTransaction();
         try {
-            $data = $request->except(['_token', '_method', 'deskripsi']);
-            $data['diskon_persen'] = (int) ($request->diskon_persen ?? 0);
-
             $obat = \App\Models\Obat::findOrFail($id);
 
-            if ($request->hasFile('path_gambar')) {
+            $data = $request->only(['nama', 'kategori', 'harga', 'stok']);
+            $data['diskon_persen'] = (int) ($request->diskon_persen ?? 0);
+
+            if ($request->hasFile('gambar')) {
                 if ($obat->path_gambar && Storage::exists('public/' . $obat->path_gambar)) {
                     Storage::delete('public/' . $obat->path_gambar);
                 }
-                $path = $request->file('path_gambar')->store('produk', 'public');
-                $data['path_gambar'] = $path;
+                $data['path_gambar'] = $request->file('gambar')->store('produk', 'public');
             }
 
             $obat->update($data);
 
-            DeskripsiObat::updateOrCreate(
-                ['obat_id' => $obat->id, 'label' => 'Product Description'],
-                ['nilai' => trim($request->deskripsi), 'urutan' => 1]
-            );
+            // Update/Create semua field deskripsi
+            $deskripsiFields = [
+                ['label' => 'Product Description', 'nilai' => $request->deskripsi,       'urutan' => 1],
+                ['label' => 'Indikasi Umum',       'nilai' => $request->indikasi_umum,   'urutan' => 2],
+                ['label' => 'Komposisi',            'nilai' => $request->komposisi,       'urutan' => 3],
+                ['label' => 'Dosis',                'nilai' => $request->dosis,           'urutan' => 4],
+                ['label' => 'Aturan Pakai',         'nilai' => $request->aturan_pakai,    'urutan' => 5],
+                ['label' => 'Kontra Indikasi',      'nilai' => $request->kontra_indikasi, 'urutan' => 6],
+                ['label' => 'Perhatian',            'nilai' => $request->perhatian,       'urutan' => 7],
+                ['label' => 'Efek Samping',         'nilai' => $request->efek_samping,    'urutan' => 8],
+                ['label' => 'Kemasan',              'nilai' => $request->kemasan,         'urutan' => 9],
+                ['label' => 'Manufaktur',           'nilai' => $request->manufaktur,      'urutan' => 10],
+                ['label' => 'No. Registrasi',       'nilai' => $request->no_registrasi,   'urutan' => 11],
+            ];
+
+            foreach ($deskripsiFields as $field) {
+                $nilai = trim($field['nilai'] ?? '');
+                if (!empty($nilai)) {
+                    DeskripsiObat::updateOrCreate(
+                        ['obat_id' => $obat->id, 'label' => $field['label']],
+                        ['nilai' => $nilai, 'urutan' => $field['urutan']]
+                    );
+                } else {
+                    // Hapus field jika dikosongkan
+                    DeskripsiObat::where('obat_id', $obat->id)
+                        ->where('label', $field['label'])
+                        ->delete();
+                }
+            }
 
             DB::commit();
             return redirect()->route('obat.index')->with('success', 'Produk berhasil diperbarui');

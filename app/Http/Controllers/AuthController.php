@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Illuminate\Auth\Events\PasswordReset;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (!$token = auth()->guard('api')->attempt($credentials)) {
+        if (! $token = auth()->guard('api')->attempt($credentials)) {
             return back()
                 ->with('error', 'Email atau password salah')
                 ->withInput($request->only('email'));
@@ -44,7 +44,7 @@ class AuthController extends Controller
         $user = auth()->guard('api')->user();
         $cookie = cookie('token', $token, 60, null, null, false, true);
 
-        if ($user->role === 'admin') {
+        if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard')->withCookie($cookie);
         }
 
@@ -70,7 +70,7 @@ class AuthController extends Controller
             'username' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'pelanggan',
+            'role' => User::ROLE_PELANGGAN,
         ]);
 
         $token = JWTAuth::fromUser($user);
@@ -82,6 +82,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->guard('api')->logout();
+
         return redirect('/')->withoutCookie('token');
     }
 
@@ -101,7 +102,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors(['email' => 'Kami tidak dapat menemukan akun dengan email tersebut'])->withInput();
         }
 
